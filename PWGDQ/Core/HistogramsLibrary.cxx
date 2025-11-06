@@ -978,6 +978,7 @@ void o2::aod::dqhistograms::DefineHistograms(HistogramManager* hm, const char* h
     }
     if (subGroupStr.Contains("mult_pvcontrib")) {
       hm->AddHistogram(histClass, "Mass_VtxNcontribReal", "Mass vs VtxNcontribReal", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kVtxNcontribReal);
+      hm->AddHistogram(histClass, "Mass_VtxNcontribReal_Pt", "Mass vs VtxNcontribReal vs Pt", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kVtxNcontribReal, 25.0, 0.0, 100.0, VarManager::kPt);
       hm->AddHistogram(histClass, "Mass_MultNTracksPVetaHalf", "Mass vs MultNTracksPVetaHalf", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kMultNTracksPVetaHalf);
       hm->AddHistogram(histClass, "Mass_MultNTracksPVeta1", "Mass vs MultNTracksPVeta1", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kMultNTracksPVeta1);
     }
