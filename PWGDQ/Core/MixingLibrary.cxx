@@ -76,6 +76,14 @@ void o2::aod::dqmixing::SetUpMixing(MixingHandler* mh, const char* mixingVarible
     std::vector<float> fMultLimsHashing = {0.0f, 5.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f, 50.0f, 55.0f, 60.0f, 65.0f, 70.0f, 75.0f, 80.0f, 85.0f, 90.0f, 100.0f, 120.0f, 140.0f, 165.0f, 200.0f, 350.0f};
     mh->AddMixingVariable(VarManager::kVtxNcontrib, fMultLimsHashing.size(), fMultLimsHashing);
   }
+  if (!nameStr.compare("MultPV")) {
+    std::vector<float> fMultLimsHashing;
+    for(int i = 0; i < 31; i++) fMultLimsHashing.push_back(3.0f * i);
+    fMultLimsHashing.push_back(100.0f);
+    fMultLimsHashing.push_back(120.0f);
+    fMultLimsHashing.push_back(140.0f);
+    mh->AddMixingVariable(VarManager::kVtxNcontribReal, fMultLimsHashing.size(), fMultLimsHashing);
+  }
   if (!nameStr.compare("Vtx1")) {
     std::vector<float> fZLimsHashing = {-10.0f, 0.0f, 10.0f};
     mh->AddMixingVariable(VarManager::kVtxZ, fZLimsHashing.size(), fZLimsHashing);
