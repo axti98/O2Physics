@@ -438,6 +438,20 @@ AnalysisCompositeCut* o2::aod::dqcuts::GetCompositeCut(const char* cutName)
     return cut;
   }
 
+  if (!nameStr.compare("jpsiMultCuts")) {
+    cut->AddCut(GetAnalysisCut("jpsiStandardKine3"));
+    cut->AddCut(GetAnalysisCut("electronMultQuality"));
+    cut->AddCut(GetAnalysisCut("electronPIDnsigmaSkewed"));
+    return cut;
+  }
+
+  if (!nameStr.compare("jpsiMultCuts_Corr")) {
+    cut->AddCut(GetAnalysisCut("jpsiStandardKine3"));
+    cut->AddCut(GetAnalysisCut("electronMultQuality"));
+    cut->AddCut(GetAnalysisCut("electronPIDnsigmaSkewed_corr"));
+    return cut;
+  }
+
   if (!nameStr.compare("jpsiO2MCdebugCuts_Pdependent_Corr")) {
     cut->AddCut(GetAnalysisCut("jpsiStandardKine4"));
     cut->AddCut(GetAnalysisCut("electronStandardQualityForO2MCdebug"));
@@ -4698,6 +4712,17 @@ AnalysisCut* o2::aod::dqcuts::GetAnalysisCut(const char* cutName)
     return cut;
   }
 
+  if (!nameStr.compare("electronMultQuality")) {
+    cut->AddCut(VarManager::kIsSPDany, 0.5, 1.5);
+    cut->AddCut(VarManager::kTPCchi2, 0.0, 4.0);
+    cut->AddCut(VarManager::kITSchi2, 0.0, 5.0);
+    cut->AddCut(VarManager::kTPCncls, 100.0, 161.0);
+    cut->AddCut(VarManager::kITSncls, 2.0, 100.0);
+    cut->AddCut(VarManager::kTrackDCAxy, -0.5, 0.5);
+    cut->AddCut(VarManager::kTrackDCAz, -0.5, 0.5);
+    return cut;
+  }
+
   if (!nameStr.compare("pionQualityCut1")) {
     cut->AddCut(VarManager::kPt, 0.15, 1000.0);
     cut->AddCut(VarManager::kIsITSibAny, 0.5, 1.5);
@@ -5531,6 +5556,12 @@ AnalysisCut* o2::aod::dqcuts::GetAnalysisCut(const char* cutName)
     cut->AddCut(VarManager::kTPCnSigmaEl, -2.0, 3.0);
     cut->AddCut(VarManager::kTPCnSigmaPr, 3.5, 3000.0);
     cut->AddCut(VarManager::kTPCnSigmaPi, 3.5, 3000.0);
+    return cut;
+  }
+  if (!nameStr.compare("electronPIDnsigmaSkewed_Corr")) {
+    cut->AddCut(VarManager::kTPCnSigmaEl_Corr, -2.0, 3.0);
+    cut->AddCut(VarManager::kTPCnSigmaPr_Corr, 3.5, 3000.0);
+    cut->AddCut(VarManager::kTPCnSigmaPi_Corr, 3.5, 3000.0);
     return cut;
   }
 
