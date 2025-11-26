@@ -168,10 +168,14 @@ struct MultiplicityClasses {
 		histos.fill(HIST("EventLossHist"), 	EVENT_ALL);
 		if(fabs(multData.multPVz()) < 10.0) 						histos.fill(HIST("EventLossHist"), 	EVENT_NOINT7);
 		if(multData.multSel8()) 									histos.fill(HIST("EventLossHist"),	EVENT_SEL8);
-		if(multData.selection_bit(aod::evsel::kNoSameBunchPileup)) 	histos.fill(HIST("EventLossHist"), 	EVENT_NOSAMEBUNCH);
 		if(multData.selection_bit(aod::evsel::kIsGoodZvtxFT0vsPV)) 	histos.fill(HIST("EventLossHist"), 	EVENT_GOODZVTX);
 	}
 	PROCESS_SWITCH(MultiplicityClasses, processEventData, "process event information", true);
+
+	void processDummy(MultData::iterator const& multData)
+	{
+	}
+	PROCESS_SWITCH(MultiplicityClasses, processDummy, "dummy process", true);
 
 	void processData(MultData::iterator const& multData)
 	{
@@ -189,8 +193,7 @@ struct MultiplicityClasses {
 		{
 			histos.fill(HIST("EventHist"), EVENT_TRIG);
 
-			if(multData.selection_bit(aod::evsel::kIsGoodZvtxFT0vsPV)
-			&& multData.selection_bit(aod::evsel::kNoSameBunchPileup))
+			if(multData.selection_bit(aod::evsel::kNoSameBunchPileup))
 			{
 				histos.fill(HIST("EventHist"), EVENT_NO_PILEUP);
 				histos.fill(HIST("ZvtxTrigHist"), zVtx);
@@ -274,7 +277,6 @@ struct MultiplicityClasses {
 					
 					if(m.multSel8()
 					&& fabs(zVtxReco) < 10.0
-					&& m.selection_bit(aod::evsel::kIsGoodZvtxFT0vsPV)
 					&& m.selection_bit(aod::evsel::kNoSameBunchPileup))
 					{
 						histos.fill(HIST("zVtxDiffTriggered"), vtxDiff);

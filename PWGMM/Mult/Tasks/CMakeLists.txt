@@ -70,6 +70,16 @@ o2physics_add_dpl_workflow(multiplicity-pb-pb
                   PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
                   COMPONENT_NAME Analysis)
 
+o2physics_add_dpl_workflow(multiplicity-classes
+                  SOURCES multiplicity-classes.cxx
+                  PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
+                  COMPONENT_NAME Analysis)
+
+o2physics_add_dpl_workflow(multiplicity-efficiency
+                  SOURCES multEfficiency.cxx
+                  PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
+                  COMPONENT_NAME Analysis)
+
 o2physics_add_dpl_workflow(mcdata-split
                   SOURCES mcdata_split_test.cxx
                   PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
