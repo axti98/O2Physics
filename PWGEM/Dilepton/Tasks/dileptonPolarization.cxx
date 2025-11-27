@@ -18,7 +18,6 @@
 #include "PWGEM/Dilepton/Utils/EMFwdTrack.h"
 #include "PWGEM/Dilepton/Utils/EMTrack.h"
 #include "PWGEM/Dilepton/Utils/EMTrackUtilities.h"
-#include "PWGEM/Dilepton/Utils/EventHistograms.h"
 #include "PWGEM/Dilepton/Utils/EventMixingHandler.h"
 #include "PWGEM/Dilepton/Utils/PairUtilities.h"
 
@@ -26,10 +25,10 @@
 #include "CommonConstants/LHCConstants.h"
 #include "DataFormatsParameters/GRPECSObject.h"
 #include "DataFormatsParameters/GRPLHCIFData.h"
-#include "DataFormatsParameters/GRPMagField.h"
-#include "DataFormatsParameters/GRPObject.h"
-#include "DetectorsBase/GeometryManager.h"
-#include "DetectorsBase/Propagator.h"
+// #include "DataFormatsParameters/GRPMagField.h"
+// #include "DataFormatsParameters/GRPObject.h"
+// #include "DetectorsBase/GeometryManager.h"
+// #include "DetectorsBase/Propagator.h"
 #include "Framework/ASoAHelpers.h"
 #include "Framework/AnalysisTask.h"
 #include "Framework/runDataProcessing.h"
@@ -64,21 +63,22 @@ using MyEMH_pair = o2::aod::pwgem::dilepton::utils::EventMixingHandler<std::tupl
 struct DileptonPolarization {
   // Configurables
   Configurable<std::string> ccdburl{"ccdb-url", "http://alice-ccdb.cern.ch", "url of the ccdb repository"};
-  Configurable<std::string> grpPath{"grpPath", "GLO/GRP/GRP", "Path of the grp file"};
-  Configurable<std::string> grpmagPath{"grpmagPath", "GLO/Config/GRPMagField", "CCDB path of the GRPMagField object"};
-  Configurable<bool> skipGRPOquery{"skipGRPOquery", true, "skip grpo query"};
-  Configurable<float> d_bz_input{"d_bz_input", -999, "bz field in kG, -999 is automatic"};
+  // Configurable<std::string> grpPath{"grpPath", "GLO/GRP/GRP", "Path of the grp file"};
+  // Configurable<std::string> grpmagPath{"grpmagPath", "GLO/Config/GRPMagField", "CCDB path of the GRPMagField object"};
+  // Configurable<bool> skipGRPOquery{"skipGRPOquery", true, "skip grpo query"};
+  // Configurable<float> d_bz_input{"d_bz_input", -999, "bz field in kG, -999 is automatic"};
 
-  Configurable<int> cfgPairType{"cfgPairType", 0, "0:dielectron:0, 1:dimuon"};
+  Configurable<int> cfgPairType{"cfgPairType", 0, "0:dielectron, 1:dimuon"};
   Configurable<int> cfgOccupancyEstimator{"cfgOccupancyEstimator", 0, "FT0C:0, Track:1"};
   Configurable<bool> cfgDoMix{"cfgDoMix", true, "flag for event mixing"};
-  Configurable<int> ndepth{"ndepth", 100, "depth for event mixing"};
+  Configurable<int> ndepth{"ndepth", 1000, "depth for event mixing"};
   Configurable<uint64_t> ndiff_bc_mix{"ndiff_bc_mix", 594, "difference in global BC required in mixed events"};
   ConfigurableAxis ConfVtxBins{"ConfVtxBins", {VARIABLE_WIDTH, -10.0f, -8.f, -6.f, -4.f, -2.f, 0.f, 2.f, 4.f, 6.f, 8.f, 10.f}, "Mixing bins - z-vertex"};
-  ConfigurableAxis ConfCentBins{"ConfCentBins", {VARIABLE_WIDTH, 0.0f, 5.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f, 100.f, 999.f}, "Mixing bins - centrality"};
-  ConfigurableAxis ConfEPBins{"ConfEPBins", {16, -M_PI / 2, +M_PI / 2}, "Mixing bins - event plane angle"};
+  ConfigurableAxis ConfCentBins{"ConfCentBins", {VARIABLE_WIDTH, 0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f, 100.f, 999.f}, "Mixing bins - centrality"};
+  ConfigurableAxis ConfEPBins{"ConfEPBins", {1, -M_PI / 2, +M_PI / 2}, "Mixing bins - event plane angle"};
   ConfigurableAxis ConfOccupancyBins{"ConfOccupancyBins", {VARIABLE_WIDTH, -1, 1e+10}, "Mixing bins - occupancy"};
   Configurable<int> cfgPolarizationFrame{"cfgPolarizationFrame", 0, "frame of polarization. 0:CS, 1:HX, else:FATAL"};
+  Configurable<bool> cfgUseAbs{"cfgUseAbs", false, "flag to use absolute value for cos_theta and phi"}; // this is to increase statistics per bin.
 
   ConfigurableAxis ConfMllBins{"ConfMllBins", {VARIABLE_WIDTH, 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.30, 0.31, 0.32, 0.33, 0.34, 0.35, 0.36, 0.37, 0.38, 0.39, 0.40, 0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.50, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.60, 0.61, 0.62, 0.63, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.70, 0.71, 0.72, 0.73, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.80, 0.81, 0.82, 0.83, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00, 1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00, 2.10, 2.20, 2.30, 2.40, 2.50, 2.60, 2.70, 2.75, 2.80, 2.85, 2.90, 2.95, 3.00, 3.05, 3.10, 3.15, 3.20, 3.25, 3.30, 3.35, 3.40, 3.45, 3.50, 3.55, 3.60, 3.65, 3.70, 3.75, 3.80, 3.85, 3.90, 3.95, 4.00, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.00, 8.10, 8.20, 8.30, 8.40, 8.50, 8.60, 8.70, 8.80, 8.90, 9.00, 9.10, 9.20, 9.30, 9.40, 9.50, 9.60, 9.70, 9.80, 9.90, 10.00, 10.10, 10.20, 10.30, 10.40, 10.50, 10.60, 10.70, 10.80, 10.90, 11.00, 11.1, 11.2, 11.3, 11.4, 11.50, 11.6, 11.7, 11.8, 11.9, 12.0}, "mll bins for output histograms"};
   ConfigurableAxis ConfPtllBins{"ConfPtllBins", {VARIABLE_WIDTH, 0.00, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00, 2.50, 3.00, 3.50, 4.00, 4.50, 5.00, 6.00, 7.00, 8.00, 9.00, 10.00}, "pTll bins for output histograms"};
@@ -111,8 +111,8 @@ struct DileptonPolarization {
 
   struct : ConfigurableGroup {
     std::string prefix = "dileptoncut_group";
-    Configurable<float> cfg_min_mass{"cfg_min_mass", 0.0, "min mass"};
-    Configurable<float> cfg_max_mass{"cfg_max_mass", 1e+10, "max mass"};
+    Configurable<float> cfg_min_pair_mass{"cfg_min_pair_mass", 0.0, "min pair mass"};
+    Configurable<float> cfg_max_pair_mass{"cfg_max_pair_mass", 1e+10, "max pair mass"};
     Configurable<float> cfg_min_pair_pt{"cfg_min_pair_pt", 0.0, "min pair pT"};
     Configurable<float> cfg_max_pair_pt{"cfg_max_pair_pt", 1e+10, "max pair pT"};
     Configurable<float> cfg_min_pair_y{"cfg_min_pair_y", -0.9, "min pair rapidity"};
@@ -134,7 +134,7 @@ struct DileptonPolarization {
 
   Service<o2::ccdb::BasicCCDBManager> ccdb;
   int mRunNumber;
-  float d_bz;
+  // float d_bz;
 
   HistogramRegistry fRegistry{"output", {}, OutputObjHandlingPolicy::AnalysisObject, false, false};
   // static constexpr std::string_view event_cut_types[2] = {"before/", "after/"};
@@ -163,7 +163,7 @@ struct DileptonPolarization {
   void init(InitContext& /*context*/)
   {
     mRunNumber = 0;
-    d_bz = 0;
+    // d_bz = 0;
 
     ccdb->setURL(ccdburl);
     ccdb->setCaching(true);
@@ -176,6 +176,8 @@ struct DileptonPolarization {
     } else if (cfgPairType.value == static_cast<int>(o2::aod::pwgem::dilepton::utils::pairutil::DileptonPairType::kDimuon)) {
       leptonM1 = o2::constants::physics::MassMuon;
       leptonM2 = o2::constants::physics::MassMuon;
+    } else {
+      LOG(fatal) << "Please select either dielectron or dimuon";
     }
 
     if (ConfVtxBins.value[0] == VARIABLE_WIDTH) {
@@ -334,39 +336,38 @@ struct DileptonPolarization {
       return;
     }
 
-    // In case override, don't proceed, please - no CCDB access required
-    if (d_bz_input > -990) {
-      d_bz = d_bz_input;
-      o2::parameters::GRPMagField grpmag;
-      if (std::fabs(d_bz) > 1e-5) {
-        grpmag.setL3Current(30000.f / (d_bz / 5.0f));
-      }
-      o2::base::Propagator::initFieldFromGRP(&grpmag);
-      mRunNumber = collision.runNumber();
-      return;
-    }
+    // // In case override, don't proceed, please - no CCDB access required
+    // if (d_bz_input > -990) {
+    //   d_bz = d_bz_input;
+    //   o2::parameters::GRPMagField grpmag;
+    //   if (std::fabs(d_bz) > 1e-5) {
+    //     grpmag.setL3Current(30000.f / (d_bz / 5.0f));
+    //   }
+    //   o2::base::Propagator::initFieldFromGRP(&grpmag);
+    //   mRunNumber = collision.runNumber();
+    //   return;
+    // }
 
-    auto run3grp_timestamp = collision.timestamp();
-    o2::parameters::GRPObject* grpo = 0x0;
-    o2::parameters::GRPMagField* grpmag = 0x0;
-    if (!skipGRPOquery)
-      grpo = ccdb->getForTimeStamp<o2::parameters::GRPObject>(grpPath, run3grp_timestamp);
-    if (grpo) {
-      o2::base::Propagator::initFieldFromGRP(grpo);
-      // Fetch magnetic field from ccdb for current collision
-      d_bz = grpo->getNominalL3Field();
-      LOG(info) << "Retrieved GRP for timestamp " << run3grp_timestamp << " with magnetic field of " << d_bz << " kG";
-    } else {
-      grpmag = ccdb->getForTimeStamp<o2::parameters::GRPMagField>(grpmagPath, run3grp_timestamp);
-      if (!grpmag) {
-        LOG(fatal) << "Got nullptr from CCDB for path " << grpmagPath << " of object GRPMagField and " << grpPath << " of object GRPObject for timestamp " << run3grp_timestamp;
-      }
-      o2::base::Propagator::initFieldFromGRP(grpmag);
-      // Fetch magnetic field from ccdb for current collision
-      d_bz = std::lround(5.f * grpmag->getL3Current() / 30000.f);
-      LOG(info) << "Retrieved GRP for timestamp " << run3grp_timestamp << " with magnetic field of " << d_bz << " kG";
-    }
-    mRunNumber = collision.runNumber();
+    // auto run3grp_timestamp = collision.timestamp();
+    // o2::parameters::GRPObject* grpo = 0x0;
+    // o2::parameters::GRPMagField* grpmag = 0x0;
+    // if (!skipGRPOquery)
+    //   grpo = ccdb->getForTimeStamp<o2::parameters::GRPObject>(grpPath, run3grp_timestamp);
+    // if (grpo) {
+    //   o2::base::Propagator::initFieldFromGRP(grpo);
+    //   // Fetch magnetic field from ccdb for current collision
+    //   d_bz = grpo->getNominalL3Field();
+    //   LOG(info) << "Retrieved GRP for timestamp " << run3grp_timestamp << " with magnetic field of " << d_bz << " kG";
+    // } else {
+    //   grpmag = ccdb->getForTimeStamp<o2::parameters::GRPMagField>(grpmagPath, run3grp_timestamp);
+    //   if (!grpmag) {
+    //     LOG(fatal) << "Got nullptr from CCDB for path " << grpmagPath << " of object GRPMagField and " << grpPath << " of object GRPObject for timestamp " << run3grp_timestamp;
+    //   }
+    //   o2::base::Propagator::initFieldFromGRP(grpmag);
+    //   // Fetch magnetic field from ccdb for current collision
+    //   d_bz = std::lround(5.f * grpmag->getL3Current() / 30000.f);
+    //   LOG(info) << "Retrieved GRP for timestamp " << run3grp_timestamp << " with magnetic field of " << d_bz << " kG";
+    // }
 
     auto grplhcif = ccdb->getForTimeStamp<o2::parameters::GRPLHCIFData>("GLO/Config/GRPLHCIF", collision.timestamp());
     int beamZ1 = grplhcif->getBeamZ(o2::constants::lhc::BeamC);
@@ -380,6 +381,8 @@ struct DileptonPolarization {
     beamP1 = std::sqrt(std::pow(beamE1, 2) - std::pow(beamM1, 2));
     beamP2 = std::sqrt(std::pow(beamE2, 2) - std::pow(beamM2, 2));
     LOGF(info, "beamZ1 = %d, beamZ2 = %d, beamA1 = %d, beamA2 = %d, beamE1 = %f (GeV), beamE2 = %f (GeV), beamM1 = %f (GeV), beamM2 = %f (GeV), beamP1 = %f (GeV), beamP2 = %f (GeV)", beamZ1, beamZ2, beamA1, beamA2, beamE1, beamE2, beamM1, beamM2, beamP1, beamP2);
+
+    mRunNumber = collision.runNumber();
   }
 
   ~DileptonPolarization()
@@ -463,6 +466,14 @@ struct DileptonPolarization {
     ROOT::Math::PtEtaPhiMVector v2(dilepton.pt2(), dilepton.eta2(), dilepton.phi2(), leptonM2);
     ROOT::Math::PtEtaPhiMVector v12 = v1 + v2;
 
+    if (v12.M() < dileptoncuts.cfg_min_pair_mass || dileptoncuts.cfg_max_pair_mass < v12.M()) {
+      return false;
+    }
+
+    if (v12.Pt() < dileptoncuts.cfg_min_pair_pt || dileptoncuts.cfg_max_pair_pt < v12.Pt()) {
+      return false;
+    }
+
     if (v12.Rapidity() < dileptoncuts.cfg_min_pair_y || dileptoncuts.cfg_max_pair_y < v12.Rapidity()) {
       return false;
     }
@@ -479,6 +490,11 @@ struct DileptonPolarization {
     }
     o2::math_utils::bringToPMPi(phiPol);
     float quadmom = (3.f * std::pow(cos_thetaPol, 2) - 1.f) / 2.f;
+
+    if (cfgUseAbs) {
+      cos_thetaPol = std::fabs(cos_thetaPol);
+      phiPol = std::fabs(phiPol);
+    }
 
     if (dilepton.sign1() * dilepton.sign2() < 0) { // ULS
       fRegistry.fill(HIST("Pair/") + HIST(event_pair_types[ev_id]) + HIST("uls/hs"), v12.M(), v12.Pt(), pair_dca, v12.Rapidity(), cos_thetaPol, phiPol, quadmom, weight);
@@ -703,7 +719,7 @@ struct DileptonPolarization {
             auto empair2 = std::get<4>(pair2);
             auto arrM = std::array<float, 4>{static_cast<float>(empair2.px()), static_cast<float>(empair2.py()), static_cast<float>(empair2.pz()), static_cast<float>(empair2.mass())};
 
-            float cos_thetaPol = 999, phiPol = 999.f;
+            float cos_thetaPol = 999.f, phiPol = 999.f;
             if (cfgPolarizationFrame == 0) {
               o2::aod::pwgem::dilepton::utils::pairutil::getAngleCS(arrM, arrD, beamE1, beamE2, beamP1, beamP2, cos_thetaPol, phiPol);
             } else if (cfgPolarizationFrame == 1) {
@@ -711,6 +727,10 @@ struct DileptonPolarization {
             }
             o2::math_utils::bringToPMPi(phiPol);
             float quadmom = (3.f * std::pow(cos_thetaPol, 2) - 1.f) / 2.f;
+            if (cfgUseAbs) {
+              cos_thetaPol = std::fabs(cos_thetaPol);
+              phiPol = std::fabs(phiPol);
+            }
             fRegistry.fill(HIST("Pair/mix/uls/hs"), empair1.mass(), empair1.pt(), empair1.getPairDCA(), empair1.rapidity(), cos_thetaPol, phiPol, quadmom, weight);
           }
         } // end of ULS
@@ -752,7 +772,7 @@ struct DileptonPolarization {
             auto empair2 = std::get<4>(pair2);
             auto arrM = std::array<float, 4>{static_cast<float>(empair2.px()), static_cast<float>(empair2.py()), static_cast<float>(empair2.pz()), static_cast<float>(empair2.mass())};
 
-            float cos_thetaPol = 999, phiPol = 999.f;
+            float cos_thetaPol = 999.f, phiPol = 999.f;
             if (cfgPolarizationFrame == 0) {
               o2::aod::pwgem::dilepton::utils::pairutil::getAngleCS(arrM, arrD, beamE1, beamE2, beamP1, beamP2, cos_thetaPol, phiPol);
             } else if (cfgPolarizationFrame == 1) {
@@ -760,6 +780,10 @@ struct DileptonPolarization {
             }
             o2::math_utils::bringToPMPi(phiPol);
             float quadmom = (3.f * std::pow(cos_thetaPol, 2) - 1.f) / 2.f;
+            if (cfgUseAbs) {
+              cos_thetaPol = std::fabs(cos_thetaPol);
+              phiPol = std::fabs(phiPol);
+            }
             fRegistry.fill(HIST("Pair/mix/lspp/hs"), empair1.mass(), empair1.pt(), empair1.getPairDCA(), empair1.rapidity(), cos_thetaPol, phiPol, quadmom, weight);
           }
         } // end of LS++
@@ -801,7 +825,7 @@ struct DileptonPolarization {
             auto empair2 = std::get<4>(pair2);
             auto arrM = std::array<float, 4>{static_cast<float>(empair2.px()), static_cast<float>(empair2.py()), static_cast<float>(empair2.pz()), static_cast<float>(empair2.mass())};
 
-            float cos_thetaPol = 999, phiPol = 999.f;
+            float cos_thetaPol = 999.f, phiPol = 999.f;
             if (cfgPolarizationFrame == 0) {
               o2::aod::pwgem::dilepton::utils::pairutil::getAngleCS(arrM, arrD, beamE1, beamE2, beamP1, beamP2, cos_thetaPol, phiPol);
             } else if (cfgPolarizationFrame == 1) {
@@ -809,6 +833,10 @@ struct DileptonPolarization {
             }
             o2::math_utils::bringToPMPi(phiPol);
             float quadmom = (3.f * std::pow(cos_thetaPol, 2) - 1.f) / 2.f;
+            if (cfgUseAbs) {
+              cos_thetaPol = std::fabs(cos_thetaPol);
+              phiPol = std::fabs(phiPol);
+            }
             fRegistry.fill(HIST("Pair/mix/lsmm/hs"), empair1.mass(), empair1.pt(), empair1.getPairDCA(), empair1.rapidity(), cos_thetaPol, phiPol, quadmom, weight);
           }
         } // end of LS--
