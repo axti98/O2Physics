@@ -1255,8 +1255,6 @@ class VarManager : public TObject
   static void FillGlobalMuonRefitCov(T1 const& muontrack, T2 const& mfttrack, const C& collision, C2 const& mftcov, float* values = nullptr);
   template <int pairType, uint32_t fillMap, typename T1, typename T2>
   static void FillPair(T1 const& t1, T2 const& t2, float* values = nullptr);
-  template <int pairType, uint32_t fillMap, typename T1, typename T2>
-  static void FillPairAlice3(T1 const& t1, T2 const& t2, float* values = nullptr);
   template <int pairType, uint32_t fillMap, typename C, typename T1, typename T2>
   static void FillPairCollision(C const& collision, T1 const& t1, T2 const& t2, float* values = nullptr);
   template <int pairType, uint32_t fillMap, typename C, typename T1, typename T2, typename M, typename P>
@@ -1271,10 +1269,6 @@ class VarManager : public TObject
   static void FillTripleMC(T1 const& t1, T2 const& t2, T3 const& t3, float* values = nullptr);
   template <int candidateType, typename T1, typename T2>
   static void FillQuadMC(T1 const& t1, T2 const& t2, T2 const& t3, float* values = nullptr);
-  template <uint32_t fillMap, typename T>
-  static void FillEventAlice3(T const& event, float* values = nullptr);
-  template <uint32_t fillMap, typename T>
-  static void FillTrackAlice3(T const& track, float* values  = nullptr);
   template <int pairType, uint32_t collFillMap, uint32_t fillMap, typename C, typename T>
   static void FillPairVertexing(C const& collision, T const& t1, T const& t2, bool propToSV = false, float* values = nullptr);
   template <uint32_t collFillMap, uint32_t fillMap, typename C, typename T>
@@ -1311,6 +1305,12 @@ class VarManager : public TObject
   static void FillBdtScore(const T& bdtScore, float* values = nullptr);
   template <typename T1, typename T2, typename T3, typename T4, typename T5>
   static void FillFIT(const T1& bc, const T2& bcs, const T3& ft0s, const T4& fv0as, const T5& fdds, float* values = nullptr);
+  template <uint32_t fillMap, typename T>
+  static void FillEventAlice3(T const& event, float* values = nullptr);
+  template <uint32_t fillMap, typename T>
+  static void FillTrackAlice3(T const& track, float* values  = nullptr);
+  template <int pairType, uint32_t fillMap, typename T1, typename T2>
+  static void FillPairAlice3(T1 const& t1, T2 const& t2, float* values = nullptr);
 
   static void SetCalibrationObject(CalibObjects calib, TObject* obj)
   {
@@ -5894,13 +5894,6 @@ void VarManager::FillEventAlice3(T const& event, float* values)
     values[kMCEventTime] = event.t();
     values[kMCEventWeight] = event.weight();
     values[kMCEventImpParam] = event.impactParameter();
-    /*if constexpr ((fillMap & CollisionCent) > 0) {
-      values[kMultMCNParticlesEta05] = event.multMCNParticlesEta05();
-      values[kMultMCNParticlesEta08] = event.multMCNParticlesEta08();
-      values[kMultMCNParticlesEta10] = event.multMCNParticlesEta10();
-      values[kMultMCNParticlesEta20] = event.multMCNParticlesEta20();
-      values[kMultMCNParticlesEta40] = event.multMCNParticlesEta40();
-    }*/
   }
 
   if constexpr ((fillMap & ReducedEventMC) > 0) {
