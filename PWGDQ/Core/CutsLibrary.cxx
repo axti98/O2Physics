@@ -439,7 +439,7 @@ AnalysisCompositeCut* o2::aod::dqcuts::GetCompositeCut(const char* cutName)
   }
 
   if (!nameStr.compare("jpsiMultCuts")) {
-    cut->AddCut(GetAnalysisCut("jpsiStandardKine3"));
+    cut->AddCut(GetAnalysisCut("jpsiStandardKine"));
     cut->AddCut(GetAnalysisCut("electronMultQuality"));
     cut->AddCut(GetAnalysisCut("electronPIDnsigmaSkewed"));
     return cut;
@@ -4773,7 +4773,7 @@ AnalysisCut* o2::aod::dqcuts::GetAnalysisCut(const char* cutName)
     cut->AddCut(VarManager::kIsSPDany, 0.5, 1.5);
     cut->AddCut(VarManager::kTPCchi2, 0.0, 4.0);
     cut->AddCut(VarManager::kITSchi2, 0.0, 5.0);
-    cut->AddCut(VarManager::kTPCncls, 100.0, 161.0);
+    cut->AddCut(VarManager::kTPCncls, 90.0, 161.0);
     cut->AddCut(VarManager::kITSncls, 2.0, 100.0);
     cut->AddCut(VarManager::kTrackDCAxy, -0.5, 0.5);
     cut->AddCut(VarManager::kTrackDCAz, -0.5, 0.5);
