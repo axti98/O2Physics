@@ -26,12 +26,11 @@
 #include "PWGDQ/DataModel/ReducedInfoTables.h"
 #include "PWGDQ/DataModel/ReducedTablesAlice3.h"
 
-#include "ALICE3/DataModel/OTFTOF.h"
-#include "ALICE3/DataModel/OTFRICH.h"
 #include "ALICE3/DataModel/OTFPIDTrk.h"
+#include "ALICE3/DataModel/OTFRICH.h"
+#include "ALICE3/DataModel/OTFTOF.h"
 #include "ALICE3/DataModel/collisionAlice3.h"
 #include "ALICE3/DataModel/tracksAlice3.h"
-
 #include "Common/Core/TableHelper.h"
 
 #include "DataFormatsParameters/GRPMagField.h"
@@ -111,7 +110,7 @@ DECLARE_SOA_TABLE(EventCuts, "AOD", "DQANAEVCUTS", dqanalysisflags::IsEventSelec
 DECLARE_SOA_TABLE(MixingHashes, "AOD", "DQANAMIXHASHA", dqanalysisflags::MixingHash);                                                            //!  joinable to ReducedEvents
 DECLARE_SOA_TABLE(BarrelTrackCuts, "AOD", "DQANATRKCUTS", dqanalysisflags::IsBarrelSelected);                                                    //!  joinable to ReducedA3TracksAssoc
 DECLARE_SOA_TABLE(BarrelAmbiguities, "AOD", "DQBARRELAMB", dqanalysisflags::BarrelAmbiguityInBunch, dqanalysisflags::BarrelAmbiguityOutOfBunch); //!  joinable to ReducedBarrelTracks
-DECLARE_SOA_TABLE(Prefilter, "AOD", "DQPREFILTER", dqanalysisflags::IsBarrelSelectedPrefilter);//!  joinable to ReducedA3TracksAssoc
+DECLARE_SOA_TABLE(Prefilter, "AOD", "DQPREFILTER", dqanalysisflags::IsBarrelSelectedPrefilter);                                                  //!  joinable to ReducedA3TracksAssoc
 
 DECLARE_SOA_TABLE(JPsieeCandidates, "AOD", "DQPSEUDOPROPER", dqanalysisflags::Massee, dqanalysisflags::Ptee, dqanalysisflags::Etaee, dqanalysisflags::Rapee, dqanalysisflags::Phiee, dqanalysisflags::Lxyee, dqanalysisflags::LxyeePoleMass, dqanalysisflags::Lzee, dqanalysisflags::AmbiguousInBunchPairs, dqanalysisflags::AmbiguousOutOfBunchPairs, dqanalysisflags::Corrassoc, dqanalysisflags::MultiplicityFT0A, dqanalysisflags::MultiplicityFT0C, dqanalysisflags::PercentileFT0M, dqanalysisflags::MultiplicityNContrib);
 DECLARE_SOA_TABLE(OniaMCTruth, "AOD", "MCTRUTHONIA", dqanalysisflags::OniaPt, dqanalysisflags::OniaEta, dqanalysisflags::OniaY, dqanalysisflags::OniaPhi, dqanalysisflags::OniaVz, dqanalysisflags::OniaVtxZ, dqanalysisflags::MultiplicityFT0A, dqanalysisflags::MultiplicityFT0C, dqanalysisflags::PercentileFT0M, dqanalysisflags::MultiplicityNContrib);
@@ -128,16 +127,16 @@ using MyEventsVtxCovSelected = soa::Join<aod::ReducedA3Events, aod::ReducedA3Eve
 using MyBarrelAssocs = soa::Join<aod::ReducedA3TracksAssoc, aod::BarrelTrackCuts>;
 using MyBarrelAssocsPrefilter = soa::Join<aod::ReducedA3TracksAssoc, aod::BarrelTrackCuts, aod::Prefilter>;
 
-using MyBarrelTracks = soa::Join<aod::ReducedA3Tracks, aod::ReducedA3TracksBarrel, 
-                                 aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,  
+using MyBarrelTracks = soa::Join<aod::ReducedA3Tracks, aod::ReducedA3TracksBarrel,
+                                 aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,
                                  aod::ReducedA3PIDOT, aod::ReducedA3TracksBarrelLabels>;
 
-using MyBarrelTracksWithCov = soa::Join<aod::ReducedA3Tracks, aod::ReducedA3TracksBarrel, aod::ReducedA3TracksBarrelCov, 
-                                        aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,  
+using MyBarrelTracksWithCov = soa::Join<aod::ReducedA3Tracks, aod::ReducedA3TracksBarrel, aod::ReducedA3TracksBarrelCov,
+                                        aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,
                                         aod::ReducedA3PIDOT, aod::ReducedA3TracksBarrelLabels>;
 
 using MyBarrelTracksWithCovWithAmbiguities = soa::Join<aod::ReducedA3Tracks, aod::ReducedA3TracksBarrel, aod::ReducedA3TracksBarrelCov,
-                                                       aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,  
+                                                       aod::ReducedA3PIDTOF, aod::ReducedA3PIDRich, aod::ReducedA3PIDRichSignals,
                                                        aod::ReducedA3PIDOT, aod::BarrelAmbiguities, aod::ReducedA3TracksBarrelLabels>;
 
 constexpr static uint32_t gkEventFillMap = VarManager::ObjTypes::ReducedEvent;
@@ -167,7 +166,7 @@ struct AnalysisEventSelection {
 
   AnalysisCompositeCut* fEventCut;
 
-  std::map<int64_t, bool> fSelMap;                     // key: reduced event global index, value: event selection decision
+  std::map<int64_t, bool> fSelMap; // key: reduced event global index, value: event selection decision
 
   void init(o2::framework::InitContext& context)
   {
@@ -964,7 +963,7 @@ struct AnalysisSameEventPairing {
         }
       }
     }
-  
+
     // Add histogram classes for each specified MCsignal at the generator level
     // TODO: create a std::vector of hist classes to be used at Fill time, to avoid using Form in the process function
     TString sigGenNamesStr = fConfigMC.genSignals.value;
@@ -1034,7 +1033,7 @@ struct AnalysisSameEventPairing {
     bool isCorrectAssoc_leg2 = false;
     dielectronList.reserve(1);
     dielectronsExtraList.reserve(1);
-    
+
     if (fConfigOptions.flatTables.value) {
       dielectronAllList.reserve(1);
     }
@@ -1109,8 +1108,8 @@ struct AnalysisSameEventPairing {
         }*/
         if (!fConfigMC.skimSignalOnly || (fConfigMC.skimSignalOnly && mcDecision > 0)) {
           dielectronList(event.globalIndex(), VarManager::fgValues[VarManager::kMass],
-                          VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi],
-                          t1.sign() + t2.sign(), twoTrackFilter, mcDecision);
+                         VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi],
+                         t1.sign() + t2.sign(), twoTrackFilter, mcDecision);
         }
 
         // Fill histograms
@@ -1641,7 +1640,7 @@ struct AnalysisAsymmetricPairing {
   Filter eventFilter = aod::dqanalysisflags::isEventSelected > static_cast<uint32_t>(0);
 
   PresliceUnsorted<MyBarrelAssocs> trackAssocsPerCollision = aod::reducedA3track_association::reducedA3eventId;
-  //PresliceUnsorted<aod::ReducedA3TracksAssoc> trackAssocsPerCollision = aod::reducedA3track_association::reducedA3eventId;
+  // PresliceUnsorted<aod::ReducedA3TracksAssoc> trackAssocsPerCollision = aod::reducedA3track_association::reducedA3eventId;
 
   // Partitions for triplets and asymmetric pairs
   Partition<MyBarrelAssocs> legACandidateAssocs = (o2::aod::dqanalysisflags::isBarrelSelected & fConfigLegAFilterMask) > static_cast<uint32_t>(0);
@@ -2497,8 +2496,7 @@ WorkflowSpec defineDataProcessing(ConfigContext const& cfgc)
     adaptAnalysisTask<AnalysisTrackSelection>(cfgc),
     adaptAnalysisTask<AnalysisPrefilterSelection>(cfgc),
     adaptAnalysisTask<AnalysisSameEventPairing>(cfgc),
-    adaptAnalysisTask<AnalysisAsymmetricPairing>(cfgc)
-  };
+    adaptAnalysisTask<AnalysisAsymmetricPairing>(cfgc)};
 }
 
 void DefineHistograms(HistogramManager* histMan, TString histClasses, const char* histGroups)
@@ -2522,7 +2520,6 @@ void DefineHistograms(HistogramManager* histMan, TString histClasses, const char
     if (classStr.Contains("SameBunchCorrelations") || classStr.Contains("OutOfBunchCorrelations")) {
       dqhistograms::DefineHistograms(histMan, objArray->At(iclass)->GetName(), "two-collisions", histName);
     }
-
 
     // TODO: CHANGE TO PROPER PID
 
