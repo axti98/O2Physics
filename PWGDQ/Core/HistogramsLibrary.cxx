@@ -881,6 +881,49 @@ void o2::aod::dqhistograms::DefineHistograms(HistogramManager* hm, const char* h
       hm->AddHistogram(histClass, "Phi_vs_PhiMC", "#varphi vs MC #varphi", false, 50, 0.0, 2. * o2::constants::math::PI, VarManager::kPhi, 50, 0.0, 2. * o2::constants::math::PI, VarManager::kMCPhi);
       hm->AddHistogram(histClass, "TrackPDGcode", "PDG code of track", false, 10001, -5000, 5000, VarManager::kMCPdgCode);
     }
+    if (subGroupStr.Contains("resolution")) {
+      hm->AddHistogram(histClass, "PtMC_vs_DeltaPt", "MC pT vs DeltaPt", false, 200, 0.0, 20.0, VarManager::kMCPt, 2000, -1.0, 1.0, VarManager::kDeltaPt);
+      hm->AddHistogram(histClass, "Pt_vs_DeltaPt", "pT vs pTRes", false, 200, 0.0, 20.0, VarManager::kPt, 2000, -1.0, 1.0, VarManager::kDeltaPt);
+      hm->AddHistogram(histClass, "EtaMC_vs_DeltaPt", "MC Eta vs DeltaPt", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kDeltaPt);
+      hm->AddHistogram(histClass, "Eta_vs_DeltaPt", "MC Eta vs DeltaPt", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kDeltaPt);
+      hm->AddHistogram(histClass, "PtMC_vs_Res", "MC pT vs DeltaPt", false, 200, 0.0, 20.0, VarManager::kMCPt, 2000, -1.0, 1.0, VarManager::kPtResolution);
+      hm->AddHistogram(histClass, "Pt_vs_Res", "pT vs pTRes", false, 200, 0.0, 20.0, VarManager::kPt, 2000, -1.0, 1.0, VarManager::kPtResolution);
+      hm->AddHistogram(histClass, "EtaMC_vs_Res", "MC Eta vs pTRes", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kPtResolution);
+      hm->AddHistogram(histClass, "Eta_vs_Res", "MC Eta vs pTRes", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kPtResolution);
+      hm->AddHistogram(histClass, "PtRes", "pT Resolution", false, 2000, -1.0, 1.0, VarManager::kPtResolution);
+
+      /*hm->AddHistogram(histClass, "PxMC_vs_DeltaPx", "MC Px vs DeltaPx", false, 200, 0.0, 20.0, VarManager::kMCPx, 2000, -1.0, 1.0, VarManager::kDeltaPx);
+      hm->AddHistogram(histClass, "Px_vs_DeltaPx", "Px vs PxRes", false, 200, 0.0, 20.0, VarManager::kPx, 2000, -1.0, 1.0, VarManager::kDeltaPx);
+      hm->AddHistogram(histClass, "EtaMC_vs_DeltaPx", "MC Eta vs DeltaPx", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kDeltaPx);
+      hm->AddHistogram(histClass, "Eta_vs_DeltaPx", "MC Eta vs DeltaPx", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kDeltaPx);
+      hm->AddHistogram(histClass, "PxMC_vs_Res", "MC Px vs DeltaPx", false, 200, 0.0, 20.0, VarManager::kMCPx, 2000, -1.0, 1.0, VarManager::kPxResolution);
+      hm->AddHistogram(histClass, "Px_vs_Res", "Px vs PxRes", false, 200, 0.0, 20.0, VarManager::kPx, 2000, -1.0, 1.0, VarManager::kPxResolution);
+      hm->AddHistogram(histClass, "EtaMC_vs_Res", "MC Eta vs PxRes", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kPxResolution);
+      hm->AddHistogram(histClass, "Eta_vs_Res", "MC Eta vs PxRes", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kPxResolution);
+      hm->AddHistogram(histClass, "PxRes", "Px Resolution", false, 2000, -1.0, 1.0, VarManager::kPxResolution);
+
+      hm->AddHistogram(histClass, "PyMC_vs_DeltaPy", "MC Py vs DeltaPy", false, 200, 0.0, 20.0, VarManager::kMCPy, 2000, -1.0, 1.0, VarManager::kDeltaPy);
+      hm->AddHistogram(histClass, "Py_vs_DeltaPy", "Py vs PyRes", false, 200, 0.0, 20.0, VarManager::kPy, 2000, -1.0, 1.0, VarManager::kDeltaPy);
+      hm->AddHistogram(histClass, "EtaMC_vs_DeltaPy", "MC Eta vs DeltaPy", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kDeltaPy);
+      hm->AddHistogram(histClass, "Eta_vs_DeltaPy", "MC Eta vs DeltaPy", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kDeltaPy);
+      hm->AddHistogram(histClass, "PyMC_vs_Res", "MC Py vs DeltaPy", false, 200, 0.0, 20.0, VarManager::kMCPy, 2000, -1.0, 1.0, VarManager::kPyResolution);
+      hm->AddHistogram(histClass, "Py_vs_Res", "Py vs PyRes", false, 200, 0.0, 20.0, VarManager::kPy, 2000, -1.0, 1.0, VarManager::kPyResolution);
+      hm->AddHistogram(histClass, "EtaMC_vs_Res", "MC Eta vs PyRes", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kPyResolution);
+      hm->AddHistogram(histClass, "Eta_vs_Res", "MC Eta vs PyRes", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kPyResolution);
+      hm->AddHistogram(histClass, "PyRes", "Py Resolution", false, 2000, -1.0, 1.0, VarManager::kPyResolution);
+
+      hm->AddHistogram(histClass, "PzMC_vs_DeltaPz", "MC Pz vs DeltaPz", false, 200, 0.0, 20.0, VarManager::kMCPz, 2000, -1.0, 1.0, VarManager::kDeltaPz);
+      hm->AddHistogram(histClass, "Pz_vs_DeltaPz", "Pz vs PzRes", false, 200, 0.0, 20.0, VarManager::kPz, 2000, -1.0, 1.0, VarManager::kDeltaPz);
+      hm->AddHistogram(histClass, "EtaMC_vs_DeltaPz", "MC Eta vs DeltaPz", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kDeltaPz);
+      hm->AddHistogram(histClass, "Eta_vs_DeltaPz", "MC Eta vs DeltaPz", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kDeltaPz);
+      hm->AddHistogram(histClass, "PzMC_vs_Res", "MC Pz vs DeltaPz", false, 200, 0.0, 20.0, VarManager::kMCPz, 2000, -1.0, 1.0, VarManager::kPzResolution);
+      hm->AddHistogram(histClass, "Pz_vs_Res", "Pz vs PzRes", false, 200, 0.0, 20.0, VarManager::kPz, 2000, -1.0, 1.0, VarManager::kPzResolution);
+      hm->AddHistogram(histClass, "EtaMC_vs_Res", "MC Eta vs PzRes", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kPzResolution);
+      hm->AddHistogram(histClass, "Eta_vs_Res", "MC Eta vs PzRes", false, 200, -6.0, 6.0, VarManager::kEta, 2000, -1.0, 1.0, VarManager::kPzResolution);
+      hm->AddHistogram(histClass, "PzRes", "Pz Resolution", false, 2000, -1.0, 1.0, VarManager::kPzResolution);*/
+
+      hm->AddHistogram(histClass, "EtaMC_vs_EtaRes", "MC eta vs EtaRes", false, 200, -6.0, 6.0, VarManager::kMCEta, 2000, -1.0, 1.0, VarManager::kEtaResolution);
+    }
     if (subGroupStr.Contains("mcmother")) {
       hm->AddHistogram(histClass, "MotherPDGcode", "PDG code of mother", false, 10001, -5000, 5000, VarManager::kMCMotherPdgCode);
     }
@@ -1005,15 +1048,32 @@ void o2::aod::dqhistograms::DefineHistograms(HistogramManager* hm, const char* h
       hm->AddHistogram(histClass, "Mass_Y", "", false, 300, 0.0, 12.0, VarManager::kMass, 100, -5.0, 5.0, VarManager::kRap);
       hm->AddHistogram(histClass, "Y_Pt", "", false, 100, -5.0, 5.0, VarManager::kRap, 20, 0.0, 20.0, VarManager::kPt);
     }
+    double multAnalysisBins[4] = {0.0, 4.0, 8.0, 1000.0};
+    double multAnalsisMassBins[201] = {0.0};
+    for(int i = 0; i <= 200; i++) {
+      multAnalsisMassBins[i] = 2.0 + i * 0.015;
+    }
+    double multAnalysisPVBins[151] = {0.0};
+    for(int i = 0; i <= 150; i++) {
+      multAnalysisPVBins[i] = i * 1.0;
+    }
+    double multAnalysisFV0ABins[1001] = {0.0};
+    for(int i = 0; i <= 1000; i++) {
+      multAnalysisFV0ABins[i] = i * 25.0;
+    }
     if (subGroupStr.Contains("mult_pvcontrib")) {
       hm->AddHistogram(histClass, "Mass_VtxNcontribReal", "Mass vs VtxNcontribReal", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kVtxNcontribReal);
+      hm->AddHistogram(histClass, "Mass_VtxNcontribReal_Pt", "Mass vs VtxNcontribReal vs Pt", false, 200, multAnalsisMassBins, VarManager::kMass, 150, multAnalysisPVBins, VarManager::kVtxNcontribReal, 3, multAnalysisBins, VarManager::kPt);
       hm->AddHistogram(histClass, "Mass_MultNTracksPVetaHalf", "Mass vs MultNTracksPVetaHalf", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kMultNTracksPVetaHalf);
       hm->AddHistogram(histClass, "Mass_MultNTracksPVeta1", "Mass vs MultNTracksPVeta1", false, 200, 2.0, 5.0, VarManager::kMass, 150, 0, 150.0, VarManager::kMultNTracksPVeta1);
     }
     if (subGroupStr.Contains("dimuon_fwdmult")) {
       hm->AddHistogram(histClass, "Mass_MultFV0A", "Mass vs MultFV0A", false, 200, 2.0, 5.0, VarManager::kMass, 1000, 0, 25000.0, VarManager::kMultFV0A);
+      hm->AddHistogram(histClass, "Mass_MultFV0A_Pt", "Mass vs MultFV0A vs Pt", false, 200, multAnalsisMassBins, VarManager::kMass, 1000, multAnalysisFV0ABins, VarManager::kMultFV0A, 3, multAnalysisBins, VarManager::kPt);
       hm->AddHistogram(histClass, "Mass_MultFT0A", "Mass vs MultFT0A", false, 200, 2.0, 5.0, VarManager::kMass, 1000, 0, 25000.0, VarManager::kMultFT0A);
+      hm->AddHistogram(histClass, "Mass_MultFT0A_Pt", "Mass vs MultFT0A vs Pt", false, 200, multAnalsisMassBins, VarManager::kMass, 1000, multAnalysisFV0ABins, VarManager::kMultFT0A, 3, multAnalysisBins, VarManager::kPt);
       hm->AddHistogram(histClass, "Mass_MultFT0C", "Mass vs MultFT0C", false, 200, 2.0, 5.0, VarManager::kMass, 1000, 0, 25000.0, VarManager::kMultFT0C);
+      hm->AddHistogram(histClass, "Mass_MultFT0C_Pt", "Mass vs MultFT0C vs Pt", false, 200, multAnalsisMassBins, VarManager::kMass, 1000, multAnalysisFV0ABins, VarManager::kMultFT0C, 3, multAnalysisBins, VarManager::kPt);
       hm->AddHistogram(histClass, "Mass_MultFDDA", "Mass vs MultFDDA", false, 200, 2.0, 5.0, VarManager::kMass, 1000, 0, 25000.0, VarManager::kMultFDDA);
       hm->AddHistogram(histClass, "Mass_MultFDDC", "Mass vs MultFDDC", false, 200, 2.0, 5.0, VarManager::kMass, 1000, 0, 25000.0, VarManager::kMultFDDC);
     }

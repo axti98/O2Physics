@@ -931,6 +931,17 @@ class VarManager : public TObject
     kPhiCharmHadron,
     kBdtCharmHadron,
 
+    // Resolution variables
+    kDeltaPt,
+    kPtResolution,
+    kDeltaPx,
+    kPxResolution,
+    kDeltaPy,
+    kPyResolution,
+    kDeltaPz,
+    kPzResolution,
+    kEtaResolution,
+
     // Index used to scan bit maps
     kBitMapIndex,
 
@@ -1279,6 +1290,8 @@ class VarManager : public TObject
   static void FillTrackCollisionMatCorr(T const& track, C const& collision, M const& materialCorr, P const& propagator, float* values = nullptr);
   template <typename U, typename T>
   static void FillTrackMC(const U& mcStack, T const& track, float* values = nullptr);
+  template <typename M, typename T>
+  static void FillResolutions(M const& mcTrack, T const& track, float* values = nullptr);
   template <int pairType, typename T, typename T1>
   static void FillEnergyCorrelatorsMC(T const& track, T1 const& t1, float* values = nullptr);
   template <int pairType, typename T1, typename T2, typename T, typename T3>
@@ -2965,6 +2978,28 @@ void VarManager::FillTrackMC(const U& mcStack, T const& track, float* values)
   }
 
   FillTrackDerived(values);
+}
+
+template <typename M, typename T>
+void VarManager::FillResolutions(M const& mcTrack, T const& track, float* values)
+{
+  if (!values) {
+    values = fgValues;
+  }
+
+  values[kDeltaPt] = track.pt() - mcTrack.pt();
+  values[kPtResolution] = (track.pt() - mcTrack.pt()) / mcTrack.pt();
+
+  values[kDeltaPx] = track.px() - mcTrack.px();
+  values[kPxResolution] = (track.px() - mcTrack.px()) / mcTrack.px();
+
+  values[kDeltaPy] = track.py() - mcTrack.py();
+  values[kPyResolution] = (track.py() - mcTrack.py()) / mcTrack.py();
+
+  values[kDeltaPz] = track.pz() - mcTrack.pz();
+  values[kPzResolution] = (track.pz() - mcTrack.pz()) / mcTrack.pz();
+
+  values[kEtaResolution] = track.eta() - mcTrack.eta();
 }
 
 template <int candidateType, uint32_t fillMap, typename T1, typename T2, typename C>

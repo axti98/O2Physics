@@ -84,3 +84,13 @@ o2physics_add_dpl_workflow(pseudo-eff-mft
                     SOURCES pseudoEffMFT.cxx
                     PUBLIC_LINK_LIBRARIES O2::Framework O2Physics::AnalysisCore O2Physics::AnalysisCCDB O2::MFTBase O2::DataFormatsMFT O2::MFTTracking O2::ITSMFTSimulation O2::ITSMFTWorkflow
                     COMPONENT_NAME Analysis)
+
+o2physics_add_dpl_workflow(multiplicity-classes
+                  SOURCES multiplicity-classes.cxx
+                  PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
+                  COMPONENT_NAME Analysis)
+
+o2physics_add_dpl_workflow(multiplicity-efficiency
+                  SOURCES multEfficiency.cxx
+                  PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
+                  COMPONENT_NAME Analysis)
