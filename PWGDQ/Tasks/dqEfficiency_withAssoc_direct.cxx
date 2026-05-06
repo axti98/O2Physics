@@ -1769,7 +1769,9 @@ struct AnalysisSameEventPairing {
             if constexpr (trackHasCov && TTwoProngFitter) {
               dielectronsExtraList(t1.globalIndex(), t2.globalIndex(), VarManager::fgValues[VarManager::kVertexingTauzProjected], VarManager::fgValues[VarManager::kVertexingLzProjected], VarManager::fgValues[VarManager::kVertexingLxyProjected]);
               if (fConfigOptions.flatTables.value && t1.has_mcParticle() && t2.has_mcParticle()) {
-                dielectronAllList(VarManager::fgValues[VarManager::kMass], VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi], t1.sign() + t2.sign(), twoTrackFilter, mcDecision,
+                dielectronAllList(VarManager::fgValues[VarManager::kVtxX], VarManager::fgValues[VarManager::kVtxY], VarManager::fgValues[VarManager::kVtxZ], VarManager::fgValues[VarManager::kVtxNcontrib],
+                                  VarManager::fgValues[VarManager::kMultTPC], VarManager::fgValues[VarManager::kMultFV0A], VarManager::fgValues[VarManager::kMultFV0C], VarManager::fgValues[VarManager::kMultFT0A], VarManager::fgValues[VarManager::kMultFT0C], VarManager::fgValues[VarManager::kMultTracklets], VarManager::fgValues[VarManager::kVtxNcontribReal],
+                                  VarManager::fgValues[VarManager::kMass], VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi], t1.sign() + t2.sign(), twoTrackFilter, mcDecision,
                                   // t1.pt(), t1.eta(), t1.phi(), t1.itsClusterMap(), t1.itsChi2NCl(), t1.tpcNClsCrossedRows(), t1.tpcNClsFound(), t1.tpcChi2NCl(), t1.dcaXY(), t1.dcaZ(), t1.tpcSignal(), t1.tpcNSigmaEl(), t1.tpcNSigmaPi(), t1.tpcNSigmaPr(), t1.beta(), t1.tofNSigmaEl(), t1.tofNSigmaPi(), t1.tofNSigmaPr(),
                                   t1.pt(), t1.eta(), t1.phi(), t1.itsClusterMap(), t1.itsChi2NCl(), t1.tpcNClsCrossedRows(), t1.tpcNClsFound(), t1.tpcChi2NCl(), t1.dcaXY(), t1.dcaZ(), t1.tpcSignal(), t1.tpcNSigmaEl(), t1.tpcNSigmaPi(), t1.tpcNSigmaPr(), -999.0, -999.0, -999.0, -999.0,
                                   // t2.pt(), t2.eta(), t2.phi(), t2.itsClusterMap(), t2.itsChi2NCl(), t2.tpcNClsCrossedRows(), t2.tpcNClsFound(), t2.tpcChi2NCl(), t2.dcaXY(), t2.dcaZ(), t2.tpcSignal(), t2.tpcNSigmaEl(), t2.tpcNSigmaPi(), t2.tpcNSigmaPr(), t2.beta(), t2.tofNSigmaEl(), t2.tofNSigmaPi(), t2.tofNSigmaPr(),
@@ -2017,7 +2019,7 @@ struct AnalysisSameEventPairing {
   PresliceUnsorted<aod::McParticles> perReducedMcEvent = aod::mcparticle::mcCollisionId;
 
   // template <int TPairType, typename TEventsMC>
-  template <int TPairType, uint32_t TEventFillMap, typename TEvents, typename TEventsMC>
+  template <int TPairType, typename TEvents, typename TEventsMC>
   void runMCGen(TEvents const& events, TEventsMC const& mcEvents, McParticles const& mcTracks)
   {
     cout << "AnalysisSameEventPairing::runMCGen() called" << endl;
@@ -2053,11 +2055,7 @@ struct AnalysisSameEventPairing {
       eFromJpsiMcParticleIndices.clear();
 
       auto mcCollisionGlobalIndex = event.mcCollisionId();
-      auto mcEvent = mcEvents.rawIteratorAt(mcCollisionGlobalIndex);
-
-      // fill event information
-      VarManager::FillEvent<TEventFillMap>(event);
-      VarManager::FillEvent<VarManager::ObjTypes::CollisionMC>(mcEvent);
+      // auto mcEvent = mcEvents.rawIteratorAt(mcCollisionGlobalIndex);
 
       auto groupedMCTracks = mcTracks.sliceBy(perReducedMcEvent, mcCollisionGlobalIndex);
       groupedMCTracks.bindInternalIndicesTo(&mcTracks);
@@ -2165,7 +2163,7 @@ struct AnalysisSameEventPairing {
   {
     cout << "AnalysisSameEventPairing::processBarrelOnly() called" << endl;
     runSameEventPairing<true, VarManager::kDecayToEE, gkEventFillMapWithMults, gkTrackFillMapWithCov>(events, bcs, trackAssocsPerCollision, barrelAssocs, barrelTracks, mcEvents, mcTracks);
-    runMCGen<VarManager::kDecayToEE, gkEventFillMapWithMults>(events, mcEvents, mcTracks);
+    runMCGen<VarManager::kDecayToEE>(events, mcEvents, mcTracks);
     cout << "AnalysisSameEventPairing::processBarrelOnly() completed" << endl;
   }
 
@@ -2175,7 +2173,7 @@ struct AnalysisSameEventPairing {
   {
     cout << "AnalysisSameEventPairing::processBarrelPbPbOnly() called" << endl;
     runSameEventPairing<true, VarManager::kDecayToEE, gkEventFillMapWithCentAndMults, gkTrackFillMapWithCov>(events, bcs, trackAssocsPerCollision, barrelAssocs, barrelTracks, mcEvents, mcTracks);
-    runMCGen<VarManager::kDecayToEE, gkEventFillMapWithCentAndMults>(events, mcEvents, mcTracks);
+    runMCGen<VarManager::kDecayToEE>(events, mcEvents, mcTracks);
     cout << "AnalysisSameEventPairing::processBarrelPbPbOnly() completed" << endl;
   }
 

@@ -284,7 +284,6 @@ struct AnalysisEventSelection {
 
   Produces<aod::EventCuts> eventSel;
   Produces<aod::MixingHashes> hash;
-  Produces<aod::StoredReducedEvents> JetEvents;
   OutputObj<THashList> fOutputList{"output"};
 
   // TODO: Provide the mixing variables and binning directly via configurables (e.g. vectors of float)
@@ -578,19 +577,6 @@ struct AnalysisEventSelection {
     runEventSelection<gkEventFillMapWithQvectorCentr>(events);
     publishSelections<gkEventFillMapWithQvectorCentr>(events);
   }
-  void processFillEvents(MyEventsBasic const& events) // Used to forward the event table from tablemaker, typical use for now is jet analysis.
-  {
-    for (auto& event : events) {
-      JetEvents(event.tag_raw(),
-                event.runNumber(),
-                event.posX(),
-                event.posY(),
-                event.posZ(),
-                event.numContrib(),
-                event.collisionTime(),
-                event.collisionTimeRes());
-    }
-  }
   void processDummy(MyEventsBasic&)
   {
     // do nothing
@@ -603,7 +589,6 @@ struct AnalysisEventSelection {
   PROCESS_SWITCH(AnalysisEventSelection, processSkimmedWithMultExtraZdc, "Run event selection on DQ skimmed events, with mult extra and ZDC", false);
   PROCESS_SWITCH(AnalysisEventSelection, processSkimmedWithMultExtraZdcFit, "Run event selection on DQ skimmed events, with mult extra, ZDC and FIT", false);
   PROCESS_SWITCH(AnalysisEventSelection, processSkimmedWithQvectorCentr, "Run event selection on DQ skimmed events, with Q-vector", false);
-  PROCESS_SWITCH(AnalysisEventSelection, processFillEvents, "Fill storedReducedEvents table for use in JE framework", false);
   PROCESS_SWITCH(AnalysisEventSelection, processDummy, "Dummy function", true);
 };
 
@@ -1909,7 +1894,9 @@ struct AnalysisSameEventPairing {
                 continue;
 
               if (fConfigOptions.flatTables.value) {
-                dielectronAllList(VarManager::fgValues[VarManager::kMass], VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi], t1.sign() + t2.sign(), twoTrackFilter, dileptonMcDecision,
+                dielectronAllList(VarManager::fgValues[VarManager::kVtxX], VarManager::fgValues[VarManager::kVtxY], VarManager::fgValues[VarManager::kVtxZ], VarManager::fgValues[VarManager::kVtxNcontrib],
+                                  VarManager::fgValues[VarManager::kMultTPC], VarManager::fgValues[VarManager::kMultFV0A], VarManager::fgValues[VarManager::kMultFV0C], VarManager::fgValues[VarManager::kMultFT0A], VarManager::fgValues[VarManager::kMultFT0C], VarManager::fgValues[VarManager::kMultTracklets], VarManager::fgValues[VarManager::kVtxNcontribReal],
+                                  VarManager::fgValues[VarManager::kMass], VarManager::fgValues[VarManager::kPt], VarManager::fgValues[VarManager::kEta], VarManager::fgValues[VarManager::kPhi], t1.sign() + t2.sign(), twoTrackFilter, dileptonMcDecision,
                                   t1.pt(), t1.eta(), t1.phi(), t1.itsClusterMap(), t1.itsChi2NCl(), t1.tpcNClsCrossedRows(), t1.tpcNClsFound(), t1.tpcChi2NCl(), t1.dcaXY(), t1.dcaZ(), t1.tpcSignal(), t1.tpcNSigmaEl(), t1.tpcNSigmaPi(), t1.tpcNSigmaPr(), t1.beta(), t1.tofNSigmaEl(), t1.tofNSigmaPi(), t1.tofNSigmaPr(),
                                   t2.pt(), t2.eta(), t2.phi(), t2.itsClusterMap(), t2.itsChi2NCl(), t2.tpcNClsCrossedRows(), t2.tpcNClsFound(), t2.tpcChi2NCl(), t2.dcaXY(), t2.dcaZ(), t2.tpcSignal(), t2.tpcNSigmaEl(), t2.tpcNSigmaPi(), t2.tpcNSigmaPr(), t2.beta(), t2.tofNSigmaEl(), t2.tofNSigmaPi(), t2.tofNSigmaPr(),
                                   VarManager::fgValues[VarManager::kKFTrack0DCAxyz], VarManager::fgValues[VarManager::kKFTrack1DCAxyz], VarManager::fgValues[VarManager::kKFDCAxyzBetweenProngs], VarManager::fgValues[VarManager::kKFTrack0DCAxy], VarManager::fgValues[VarManager::kKFTrack1DCAxy], VarManager::fgValues[VarManager::kKFDCAxyBetweenProngs],

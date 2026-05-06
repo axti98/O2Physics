@@ -4577,9 +4577,9 @@ void VarManager::FillPairVertexing(C const& collision, T const& t1, T const& t2,
       values[kVertexingTauzErr] = values[kVertexingLzErr] * v12.M() / (TMath::Abs(v12.Pz()) * o2::constants::physics::LightSpeedCm2NS);
       values[kVertexingTauxyErr] = values[kVertexingLxyErr] * v12.M() / (v12.Pt() * o2::constants::physics::LightSpeedCm2NS);
 
-      values[kCosPointingAngle] = ((collision.posX() - secondaryVertex[0]) * v12.Px() +
-                                   (collision.posY() - secondaryVertex[1]) * v12.Py() +
-                                   (collision.posZ() - secondaryVertex[2]) * v12.Pz()) /
+      values[kCosPointingAngle] = ((secondaryVertex[0] - collision.posX()) * v12.Px() +
+                                   (secondaryVertex[1] - collision.posY()) * v12.Py() +
+                                   (secondaryVertex[2] - collision.posZ()) * v12.Pz()) /
                                   (v12.P() * values[VarManager::kVertexingLxyz]);
       // Decay length defined as in Run 2
       values[kVertexingLzProjected] = ((secondaryVertex[2] - collision.posZ()) * v12.Pz()) / TMath::Sqrt(v12.Pz() * v12.Pz());
@@ -4995,9 +4995,9 @@ void VarManager::FillTripletVertexing(C const& collision, T const& t1, T const& 
       values[kVertexingTauzErr] = values[kVertexingLzErr] * v123.M() / (TMath::Abs(v123.Pz()) * o2::constants::physics::LightSpeedCm2NS);
       values[kVertexingTauxyErr] = values[kVertexingLxyErr] * v123.M() / (v123.Pt() * o2::constants::physics::LightSpeedCm2NS);
 
-      values[kCosPointingAngle] = ((collision.posX() - secondaryVertex[0]) * v123.Px() +
-                                   (collision.posY() - secondaryVertex[1]) * v123.Py() +
-                                   (collision.posZ() - secondaryVertex[2]) * v123.Pz()) /
+      values[kCosPointingAngle] = ((secondaryVertex[0] - collision.posX()) * v123.Px() +
+                                   (secondaryVertex[1] - collision.posY()) * v123.Py() +
+                                   (secondaryVertex[2] - collision.posZ()) * v123.Pz()) /
                                   (v123.P() * values[VarManager::kVertexingLxyz]);
       // run 2 definitions: Decay length projected onto the momentum vector of the candidate
       values[kVertexingLzProjected] = (secondaryVertex[2] - collision.posZ()) * v123.Pz();
@@ -5256,9 +5256,9 @@ void VarManager::FillDileptonTrackVertexing(C const& collision, T1 const& lepton
       values[kVertexingTauxyErr] = values[kVertexingLxyErr] * v123.M() / (v123.Pt() * o2::constants::physics::LightSpeedCm2NS);
 
       if (fgUsedVars[kCosPointingAngle] && fgUsedVars[kVertexingLxyz]) {
-        values[VarManager::kCosPointingAngle] = ((collision.posX() - secondaryVertex[0]) * v123.Px() +
-                                                 (collision.posY() - secondaryVertex[1]) * v123.Py() +
-                                                 (collision.posZ() - secondaryVertex[2]) * v123.Pz()) /
+        values[VarManager::kCosPointingAngle] = ((secondaryVertex[0] - collision.posX()) * v123.Px() +
+                                                 (secondaryVertex[1] - collision.posY()) * v123.Py() +
+                                                 (secondaryVertex[2] - collision.posZ()) * v123.Pz()) /
                                                 (v123.P() * values[VarManager::kVertexingLxyz]);
       }
       // run 2 definitions: Lxy projected onto the momentum vector of the candidate
@@ -6283,9 +6283,9 @@ void VarManager::FillDileptonTrackTrackVertexing(C const& collision, T1 const& l
       values[kVertexingTauzErr] = values[kVertexingLzErr] * v1234.M() / (TMath::Abs(v1234.Pz()) * o2::constants::physics::LightSpeedCm2NS);
       values[kVertexingTauxyErr] = values[kVertexingLxyErr] * v1234.M() / (v1234.Pt() * o2::constants::physics::LightSpeedCm2NS);
 
-      values[kCosPointingAngle] = ((collision.posX() - secondaryVertex[0]) * v1234.Px() +
-                                   (collision.posY() - secondaryVertex[1]) * v1234.Py() +
-                                   (collision.posZ() - secondaryVertex[2]) * v1234.Pz()) /
+      values[kCosPointingAngle] = ((secondaryVertex[0] - collision.posX()) * v1234.Px() +
+                                   (secondaryVertex[1] - collision.posY()) * v1234.Py() +
+                                   (secondaryVertex[2] - collision.posZ()) * v1234.Pz()) /
                                   (v1234.P() * values[VarManager::kVertexingLxyz]);
       // // run 2 definitions: Decay length projected onto the momentum vector of the candidate
       values[kVertexingLzProjected] = (secondaryVertex[2] - collision.posZ()) * v1234.Pz();
