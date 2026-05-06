@@ -2019,7 +2019,7 @@ struct AnalysisSameEventPairing {
   PresliceUnsorted<aod::McParticles> perReducedMcEvent = aod::mcparticle::mcCollisionId;
 
   // template <int TPairType, typename TEventsMC>
-  template <int TPairType, uint32_t TEvents, typename TEventsMC>
+  template <int TPairType, uint32_t TEventFillMap, typename TEvents, typename TEventsMC>
   void runMCGen(TEvents const& events, TEventsMC const& mcEvents, McParticles const& mcTracks)
   {
     cout << "AnalysisSameEventPairing::runMCGen() called" << endl;
