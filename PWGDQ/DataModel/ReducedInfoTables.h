@@ -157,6 +157,12 @@ DECLARE_SOA_COLUMN(Psi2Random, psi2random, float); //!  Event plane angle from r
 DECLARE_SOA_COLUMN(Psi2A, psi2a, float);           //!  Event plane angle from Q-vector A
 DECLARE_SOA_COLUMN(Psi2B, psi2b, float);           //!  Event plane angle from Q-vector B
 DECLARE_SOA_COLUMN(Psi2C, psi2c, float);           //!  Event plane angle from Q-vector C
+
+DECLARE_SOA_COLUMN(NTrkGlobal, nTrkGlobal, int);
+DECLARE_SOA_COLUMN(NTrkToward, nTrkToward, int);
+DECLARE_SOA_COLUMN(NTrkTransverse, nTrkTransverse, int);
+DECLARE_SOA_COLUMN(NTrkBackward, nTrkBackward, int);
+
 } // namespace reducedevent
 
 DECLARE_SOA_TABLE_STAGED(ReducedEvents, "REDUCEDEVENT", //!   Main event information table
@@ -199,6 +205,12 @@ DECLARE_SOA_TABLE(ReducedEventsMultAll, "AOD", "REMULTALL", //!  Multiplicity in
                   reducedevent::NTPCoccupContribShortA, reducedevent::NTPCoccupContribShortC,
                   reducedevent::NTPCoccupMeanTimeShortA, reducedevent::NTPCoccupMeanTimeShortC,
                   reducedevent::NTPCoccupMedianTimeShortA, reducedevent::NTPCoccupMedianTimeShortC);
+
+DECLARE_SOA_TABLE(ReducedEventsGlobalTrk, "AOD", "REGLOBALTRK", 
+                  reducedevent::NTrkGlobal); 
+
+DECLARE_SOA_TABLE(ReducedEventsMultAzimuth, "AOD", "REMULTAZIMUTH", 
+                  reducedevent::NTrkToward, reducedevent::NTrkTransverse, reducedevent::NTrkBackward);
 
 DECLARE_SOA_TABLE(ReducedEventsVtxCov, "AOD", "REVTXCOV", //!    Event vertex covariance matrix
                   collision::CovXX, collision::CovXY, collision::CovXZ,
