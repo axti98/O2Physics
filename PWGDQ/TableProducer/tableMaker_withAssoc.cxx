@@ -340,9 +340,9 @@ struct TableMaker {
   o2::parameters::GRPMagField* fGrpMag = nullptr;   // for run 3, we access GRPMagField from GLO/Config/GRPMagField
 
   AnalysisCompositeCut* fEventCut = nullptr;     //! Event selection cut
-  std::vector<AnalysisCut*> fTrackCuts; //! Barrel track cuts
-  std::vector<AnalysisCut*> fMuonCuts;  //! Muon track cuts
-  std::vector<AnalysisCut*> fEMCalCuts; //! EMCal cluster cuts
+  std::vector<AnalysisCut*> fTrackCuts;          //! Barrel track cuts
+  std::vector<AnalysisCut*> fMuonCuts;           //! Muon track cuts
+  std::vector<AnalysisCut*> fEMCalCuts;          //! EMCal cluster cuts
 
   bool fDoDetailedQA = false; // Bool to set detailed QA true, if QA is set true
   int fCurrentRun = -1;       // needed to detect if the run changed and trigger update of calibrations etc.
